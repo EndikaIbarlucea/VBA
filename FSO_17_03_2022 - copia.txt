@@ -1,15 +1,15 @@
 Attribute VB_Name = "FSO_17_03_2022"
 'EJEMPLOS DE FILE SYSTEM OBJECT (FSO)
-' Versión 07/02/2022
+' VersiÃ³n 25/03/2022
 
 
 '//
 Sub apuntesFSO()
 
-    '//DIMENSIONADO Y DECLARACIÓN
+    '//DIMENSIONADO Y DECLARACIÃ“N
     
     'FSO
-    'Al declarar con CreateObject() evitamos tener que activar la librería
+    'Al declarar con CreateObject() evitamos tener que activar la librerÃ­a
     Dim FSO As Object
     Set FSO = CreateObject("Scripting.FileSystemObject")
     
@@ -21,7 +21,7 @@ Sub apuntesFSO()
     strRutaCarpeta = "C:\" & strNombreCarpeta
     
     '//CREAR UNA CARPETA
-    'el método CreateFolder crea la carpeta indicada si no existe, en caso contrario devuelve error
+    'el mÃ©todo CreateFolder crea la carpeta indicada si no existe, en caso contrario devuelve error
     'por ello comprobamos antes su existencia, si existe podemos borrarla o modificarla
     If FSO.FolderExists(strRutaCarpeta) Then
         'FSO.DeleteFolder (strRutaCarpeta) 'con .DeleteFolder eliminamos la carpeta
@@ -31,7 +31,7 @@ Sub apuntesFSO()
     
     '//CREAR UN ARCHIVO DE TEXTO
     
-    ' el método CreateTextFile crea el archivo de texto en la ruta específica si el archivo no existe,
+    ' el mÃ©todo CreateTextFile crea el archivo de texto en la ruta especÃ­fica si el archivo no existe,
     ' en otro caso lo sobrescribe, debemos comprobar antes si el archivo existe para modificarlo
     Dim strNombreFichero As String
     strNombreFichero = "test.txt"
@@ -64,16 +64,16 @@ Sub apuntesFSO()
     '/ARCHIVO
     Set f = FSO.getFile(strRutaCarpeta & "\" & strNombreFichero) 'Retorna el objeto Fila
     
-    Debug.Print f.dateCreated   'Fecha de creación
-    'Debug.Print f.DateLastModified 'Última fecha de modificación
-    Debug.Print f.Size          'Tamaño en bytes
+    Debug.Print f.dateCreated   'Fecha de creaciÃ³n
+    'Debug.Print f.DateLastModified 'Ãšltima fecha de modificaciÃ³n
+    Debug.Print f.Size          'TamaÃ±o en bytes
     
     '/CARPETA
     Set f = FSO.GetFolder(strRutaCarpeta & "\")  'Retorna el objeto Fila
     
-    Debug.Print f.dateCreated   'Fecha de creación
+    Debug.Print f.dateCreated   'Fecha de creaciÃ³n
     'Debug.Print f.DateModified
-    Debug.Print f.Size          'Tamaño en bytes
+    Debug.Print f.Size          'TamaÃ±o en bytes
     
     '//OBTENER UNA LISTA CON TODOS LOS ARCHIVOS DE UNA CARPETA
     Dim MyFile As Object
@@ -132,9 +132,9 @@ Function checkFile(strFile As String) As Boolean
 End Function
 
 '////////////////
-'RETORNAR FECHA CREACIÓN FICHERO
+'RETORNAR FECHA CREACIÃ“N FICHERO
 Function checkFileDateCreated(strFile As String) As Date
-'Retorna la fecha de creación del archivo indicado en formato largo "dd/mm/aaaa hh:mm:ss"
+'Retorna la fecha de creaciÃ³n del archivo indicado en formato largo "dd/mm/aaaa hh:mm:ss"
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
@@ -144,21 +144,21 @@ Function checkFileDateCreated(strFile As String) As Date
     'Dimensionamos el objeto del sistema
     Dim FSO As Object: Set FSO = dimFSO
     
-    'obtenemos el archivo y retornamos la fecha de creación
+    'obtenemos el archivo y retornamos la fecha de creaciÃ³n
     Dim f As Object: Set f = FSO.getFile(strFile)
     checkFileDateCreated = f.dateCreated
     
     'si no existe el fichero retornamos 01/01/1900
     Else
-        checkFileDateCreated = #1/1/1900# 'debería de retornar también la hora?
+        checkFileDateCreated = #1/1/1900# 'deberÃ­a de retornar tambiÃ©n la hora?
     End If
 
 End Function
 
 '////////////////
-'RETORNAR FECHA ÚLTIMA MODIFICACIÓN DE FICHERO
+'RETORNAR FECHA ÃšLTIMA MODIFICACIÃ“N DE FICHERO
 Function checkFileDateModified(strFile As String) As Date
-'Retorna la fecha de modificación del archivo indicado en formato largo "dd/mm/aaaa hh:mm:ss"
+'Retorna la fecha de modificaciÃ³n del archivo indicado en formato largo "dd/mm/aaaa hh:mm:ss"
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
@@ -168,21 +168,21 @@ Function checkFileDateModified(strFile As String) As Date
     'Dimensionamos el objeto del sistema
     Dim FSO As Object: Set FSO = dimFSO
     
-    'obtenemos el archivo y retornamos la fecha de creación
+    'obtenemos el archivo y retornamos la fecha de creaciÃ³n
     Dim f As Object: Set f = FSO.getFile(strFile)
     checkFileDateModified = f.datelastmodified
     
     'si no existe el fichero retornamos 01/01/1900
     Else
-        checkFileDateModified = #1/1/1900# 'debería de retornar también la hora?
+        checkFileDateModified = #1/1/1900# 'deberÃ­a de retornar tambiÃ©n la hora?
     End If
 
 End Function
 
 '////////////////
-'RETORNAR TAMAÑO FICHERO
+'RETORNAR TAMAÃ‘O FICHERO
 Function checkFileSize(strFile As String) As Long
-'Retorna el tamaño en bytes del archivo indicado
+'Retorna el tamaÃ±o en bytes del archivo indicado
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
@@ -192,7 +192,7 @@ Function checkFileSize(strFile As String) As Long
     'Dimensionamos el objeto del sistema
     Dim FSO As Object: Set FSO = dimFSO
     
-    'obtenemos el archivo y retornamos la fecha de creación
+    'obtenemos el archivo y retornamos la fecha de creaciÃ³n
     Dim f As Object: Set f = FSO.getFile(strFile)
     checkFileSize = f.Size
     
@@ -204,20 +204,20 @@ Function checkFileSize(strFile As String) As Long
 End Function
 
 '////////////////////////
-'COMPROBAR SI FICHERO ES SÓLO LECTURA
+'COMPROBAR SI FICHERO ES SÃ“LO LECTURA
 Function checkReadOnly(strFile As String) As Boolean
-'Retorna true si el archivo indicado está protegido contra escritura
+'Retorna true si el archivo indicado estÃ¡ protegido contra escritura
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
-    'Comprobamos la existencia del fichero, si existe comprobamos si está como sólo lectura
+    'Comprobamos la existencia del fichero, si existe comprobamos si estÃ¡ como sÃ³lo lectura
     If checkFile(strFile) Then
 
         'Dimensionamos el objeto del sistema
         Dim FSO As Object: Set FSO = dimFSO
         Dim f As Object: Set f = FSO.getFile(strFile)
         
-        'Comprobamos si el archivo está protegido contra escritura, si lo es retornamos true
+        'Comprobamos si el archivo estÃ¡ protegido contra escritura, si lo es retornamos true
         'Info : https://docs.microsoft.com/en-us/previous-versions//5tx15443(v=vs.85)?redirectedfrom=MSDN
         If f.Attributes And 1 Then
             checkReadOnly = True
@@ -232,20 +232,20 @@ Function checkReadOnly(strFile As String) As Boolean
 End Function
 
 '////////////////////////
-'ESTABLECE UN FICHERO COMO SÓLO LECTURA
+'ESTABLECE UN FICHERO COMO SÃ“LO LECTURA
 Sub setReadOnly(strFile As String)
-'Comprueba si el archivo indicado está protegido contra escritura
-' si no lo está lo establece como sólo lectura
+'Comprueba si el archivo indicado estÃ¡ protegido contra escritura
+' si no lo estÃ¡ lo establece como sÃ³lo lectura
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
-    'Comprobamos si el archivo está como sólo lectura
+    'Comprobamos si el archivo estÃ¡ como sÃ³lo lectura
     If checkReadOnly(strFile) Then
     
-        'si está como sólo lectura salimos
+        'si estÃ¡ como sÃ³lo lectura salimos
         Exit Sub
    
-    'en otro caso establecemos como sólo lectura
+    'en otro caso establecemos como sÃ³lo lectura
     Else
         
         'Comprobamos que el archivo existe, comprobamos porque si el archivo no existe checkReadOnly retorna False
@@ -262,14 +262,14 @@ Sub setReadOnly(strFile As String)
         
 End Sub
 '////////////////////////
-'ELIMINA EL ATRIBUTO DE SÓLO LECTURA DE UN ARCHIVO
+'ELIMINA EL ATRIBUTO DE SÃ“LO LECTURA DE UN ARCHIVO
 Sub removeReadOnly(strFile As String)
-'Comprueba si el archivo indicado está protegido contra escritura
-' si lo está elimina la condición de sólo lectura
+'Comprueba si el archivo indicado estÃ¡ protegido contra escritura
+' si lo estÃ¡ elimina la condiciÃ³n de sÃ³lo lectura
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
-    'Comprobamos si el archivo está como sólo lectura, si lo está eliminamos la condición
+    'Comprobamos si el archivo estÃ¡ como sÃ³lo lectura, si lo estÃ¡ eliminamos la condiciÃ³n
     If checkReadOnly(strFile) Then
     
         'Dimensionamos el objeto del sistema
@@ -285,11 +285,11 @@ End Sub
 'OBTENER LOS NOMBRES DE TODOS LOS ARCHIVOS DE UN DIRECTORIO
 Function getFileNames(strFile As String) As Variant
 'retorna un array con todos los nombres de los archivos de un directorio
-' si está vacío o si el directorio no existe retorna un array vacío
+' si estÃ¡ vacÃ­o o si el directorio no existe retorna un array vacÃ­o
 'strFile debe incorporar la ruta del archivo,
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
 
-'Dimensionamos un array vacío
+'Dimensionamos un array vacÃ­o
 Dim arr As Variant
 
     'Comprobamos si el directorio existe en la ruta especificada
@@ -320,16 +320,16 @@ End Function
 
 '////////////////////////
 'OBTENER LOS NOMBRES DE TODOS LOS ARCHIVOS DE UN DIRECTORIO
-' Y SU FECHA DE MODIFICACIÓN
+' Y SU FECHA DE MODIFICACIÃ“N
 
 Function getFileNamesAndDates(strFolder As String) As Variant
 'retorna un array bidimensional con todos los nombres de los archivos de un directorio
-' en la primera columna y las fechas de última modificación en la segunda
-' si está vacío o si el directorio no existe retorna un array vacío
+' en la primera columna y las fechas de Ãºltima modificaciÃ³n en la segunda
+' si estÃ¡ vacÃ­o o si el directorio no existe retorna un array vacÃ­o
 'strFolder ejemplo:
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\"
 
-'Dimensionamos un array vacío
+'Dimensionamos un array vacÃ­o
 Dim arr As Variant
 
     'Comprobamos si el directorio existe en la ruta especificada
@@ -360,15 +360,15 @@ Dim arr As Variant
 End Function
 Function getFileNamesAndDatesCurrent(strFolder As String, dtDate As Date) As Variant
 'retorna un array bidimensional con todos los nombres de los archivos de un directorio
-' en la primera columna y las fechas de última modificación en la segunda
-'que estén en el mes y año de dtDate
-' si está vacío o si el directorio no existe retorna un array vacío
+' en la primera columna y las fechas de Ãºltima modificaciÃ³n en la segunda
+'que estÃ©n en el mes y aÃ±o de dtDate
+' si estÃ¡ vacÃ­o o si el directorio no existe retorna un array vacÃ­o
 'strFolder ejemplo:
 'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\"
 
 'On Error GoTo GESTION_ERRORES
 
-'Dimensionamos un array vacío
+'Dimensionamos un array vacÃ­o
 Dim arr As Variant
 
     'Comprobamos si el directorio existe en la ruta especificada
@@ -386,7 +386,7 @@ Dim arr As Variant
         'iteramos sobre los elementos y los guardamos en el array
         For Each MyFile In MyFolder.Files
             
-            'añadimos sólo las entradas que cumplen con el mes especificado
+            'aÃ±adimos sÃ³lo las entradas que cumplen con el mes especificado
             If Month(DateValue(MyFile.datelastmodified)) = Month(dtDate) And Year(DateValue(MyFile.datelastmodified)) = Year(dtDate) Then
                 arr(i, 0) = MyFile.Name
                 arr(i, 1) = DateValue(MyFile.datelastmodified)
