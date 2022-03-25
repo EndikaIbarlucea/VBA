@@ -1,0 +1,418 @@
+Attribute VB_Name = "FSO_17_03_2022"
+'EJEMPLOS DE FILE SYSTEM OBJECT (FSO)
+' Versión 07/02/2022
+
+
+'//
+Sub apuntesFSO()
+
+    '//DIMENSIONADO Y DECLARACIÓN
+    
+    'FSO
+    'Al declarar con CreateObject() evitamos tener que activar la librería
+    Dim FSO As Object
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    
+    'Resto de variables
+    Dim strNombreCarpeta As String, strRutaCarpeta As String
+    
+    'definimos el nombre y la ruta de la carpeta
+    strNombreCarpeta = "Carpeta test"
+    strRutaCarpeta = "C:\" & strNombreCarpeta
+    
+    '//CREAR UNA CARPETA
+    'el método CreateFolder crea la carpeta indicada si no existe, en caso contrario devuelve error
+    'por ello comprobamos antes su existencia, si existe podemos borrarla o modificarla
+    If FSO.FolderExists(strRutaCarpeta) Then
+        'FSO.DeleteFolder (strRutaCarpeta) 'con .DeleteFolder eliminamos la carpeta
+    Else
+        FSO.CreateFolder (strRutaCarpeta)
+    End If
+    
+    '//CREAR UN ARCHIVO DE TEXTO
+    
+    ' el método CreateTextFile crea el archivo de texto en la ruta específica si el archivo no existe,
+    ' en otro caso lo sobrescribe, debemos comprobar antes si el archivo existe para modificarlo
+    Dim strNombreFichero As String
+    strNombreFichero = "test.txt"
+    
+    If FSO.FileExists(strRutaCarpeta & "\" & strNombreFichero) Then
+        'FSO.DeleteFile (strRutaCarpeta & "\" & strNombreFichero)
+    Else
+        Set ts = FSO.CreateTextFile(strRutaCarpeta & "\" & strNombreFichero)
+    End If
+    
+    '//COPIAR UN ARCHIVO O CARPETA A OTRO DIRECTORIO (O AL MISMO)
+    ' FSO.CopyFile rutaOrigen , rutaDestino
+    'verificamos que las carpetas y el archivo exista
+    
+    'si copiamos en la misma carpeta
+    FSO.CopyFIle strRutaCarpeta & "\" & strNombreFichero, strRutaCarpeta & "\" & "test_copia.txt"
+    
+    'si copiamos en otro destino y no existe devuelve error
+    'FSO.CopyFIle strRutaCarpeta & "\" & strNombreFichero, "C:\Carpeta no existe\test_copia.txt"
+    
+    '//ELIMINAR ARCHIVOS O CARPETAS
+    
+    
+    '//MOVER UN ARCHIVO
+    'FSO.MoveFile rutaOrigen, rutaDestino
+    'FSO.MoveFolder rutaOrigen, rutaDestino
+    
+    '//OBTENER LAS PROPIEDADES DE UNA CARPETA O UN ARCHIVO
+    
+    '/ARCHIVO
+    Set f = FSO.getFile(strRutaCarpeta & "\" & strNombreFichero) 'Retorna el objeto Fila
+    
+    Debug.Print f.dateCreated   'Fecha de creación
+    'Debug.Print f.DateLastModified 'Última fecha de modificación
+    Debug.Print f.Size          'Tamaño en bytes
+    
+    '/CARPETA
+    Set f = FSO.GetFolder(strRutaCarpeta & "\")  'Retorna el objeto Fila
+    
+    Debug.Print f.dateCreated   'Fecha de creación
+    'Debug.Print f.DateModified
+    Debug.Print f.Size          'Tamaño en bytes
+    
+    '//OBTENER UNA LISTA CON TODOS LOS ARCHIVOS DE UNA CARPETA
+    Dim MyFile As Object
+    Set MyFolder = FSO.GetFolder(strRutaCarpeta & "\")
+    
+    For Each MyFile In MyFolder.Files
+        Debug.Print MyFile.Name
+    Next MyFile
+    
+    '//OBTENER UNA LISTA CON TODAS LAS SUBCARPETAS DE UNA CARPETA
+    Dim MySubFolder As Object
+    For Each MySubFolder In MyFolder.SubFolders
+        Debug.Print MySubFolder.Name
+    Next MySubFolder
+    
+End Sub
+
+'//////////////////
+'DIMENSIONADO FSO
+Function dimFSO() As Object
+    Dim myFSO As Object
+    Set myFSO = CreateObject("Scripting.FileSystemObject")
+    Set dimFSO = myFSO
+End Function
+
+'//////////////////
+'COMPROBAR DIRECTORIO
+Function checkFolder(strDirectorio As String) As Boolean
+'Comprueba si el directorio existe, retornamos TRUE, FALSE en otro caso
+    
+    'Dimensionamos el objeto de sistema
+    Dim FSO As Object: Set FSO = dimFSO
+    
+    If FSO.FolderExists(strDirectorio) Then
+        checkFolder = True
+    Else
+        checkFolder = False
+    End If
+  
+End Function
+
+'////////////////
+'COMPROBAR FICHERO
+Function checkFile(strFile As String) As Boolean
+'Comprueba si el fichero existe, retornamos TRUE, FALSE en otro caso
+
+    'Dimensionamos el objeto del sistema
+    Dim FSO As Object: Set FSO = dimFSO
+    
+    If FSO.FileExists(strFile) Then
+        checkFile = True
+    Else
+        checkFile = False
+    End If
+    
+End Function
+
+'////////////////
+'RETORNAR FECHA CREACIÓN FICHERO
+Function checkFileDateCreated(strFile As String) As Date
+'Retorna la fecha de creación del archivo indicado en formato largo "dd/mm/aaaa hh:mm:ss"
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+    'Comprobamos la existencia del fichero, si existe retornamos la fecha
+    If checkFile(strFile) Then
+
+    'Dimensionamos el objeto del sistema
+    Dim FSO As Object: Set FSO = dimFSO
+    
+    'obtenemos el archivo y retornamos la fecha de creación
+    Dim f As Object: Set f = FSO.getFile(strFile)
+    checkFileDateCreated = f.dateCreated
+    
+    'si no existe el fichero retornamos 01/01/1900
+    Else
+        checkFileDateCreated = #1/1/1900# 'debería de retornar también la hora?
+    End If
+
+End Function
+
+'////////////////
+'RETORNAR FECHA ÚLTIMA MODIFICACIÓN DE FICHERO
+Function checkFileDateModified(strFile As String) As Date
+'Retorna la fecha de modificación del archivo indicado en formato largo "dd/mm/aaaa hh:mm:ss"
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+    'Comprobamos la existencia del fichero, si existe retornamos la fecha
+    If checkFile(strFile) Then
+
+    'Dimensionamos el objeto del sistema
+    Dim FSO As Object: Set FSO = dimFSO
+    
+    'obtenemos el archivo y retornamos la fecha de creación
+    Dim f As Object: Set f = FSO.getFile(strFile)
+    checkFileDateModified = f.datelastmodified
+    
+    'si no existe el fichero retornamos 01/01/1900
+    Else
+        checkFileDateModified = #1/1/1900# 'debería de retornar también la hora?
+    End If
+
+End Function
+
+'////////////////
+'RETORNAR TAMAÑO FICHERO
+Function checkFileSize(strFile As String) As Long
+'Retorna el tamaño en bytes del archivo indicado
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+    'Comprobamos la existencia del fichero, si existe retornamos la fecha
+    If checkFile(strFile) Then
+
+    'Dimensionamos el objeto del sistema
+    Dim FSO As Object: Set FSO = dimFSO
+    
+    'obtenemos el archivo y retornamos la fecha de creación
+    Dim f As Object: Set f = FSO.getFile(strFile)
+    checkFileSize = f.Size
+    
+    'si no existe el fichero retornamos 0
+    Else
+        checkFileSize = 0
+    End If
+
+End Function
+
+'////////////////////////
+'COMPROBAR SI FICHERO ES SÓLO LECTURA
+Function checkReadOnly(strFile As String) As Boolean
+'Retorna true si el archivo indicado está protegido contra escritura
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+    'Comprobamos la existencia del fichero, si existe comprobamos si está como sólo lectura
+    If checkFile(strFile) Then
+
+        'Dimensionamos el objeto del sistema
+        Dim FSO As Object: Set FSO = dimFSO
+        Dim f As Object: Set f = FSO.getFile(strFile)
+        
+        'Comprobamos si el archivo está protegido contra escritura, si lo es retornamos true
+        'Info : https://docs.microsoft.com/en-us/previous-versions//5tx15443(v=vs.85)?redirectedfrom=MSDN
+        If f.Attributes And 1 Then
+            checkReadOnly = True
+        Else
+            checkReadOnly = False
+        End If
+    'si no existe retornamos false
+    Else
+        checkReadOnly = False
+    End If
+        
+End Function
+
+'////////////////////////
+'ESTABLECE UN FICHERO COMO SÓLO LECTURA
+Sub setReadOnly(strFile As String)
+'Comprueba si el archivo indicado está protegido contra escritura
+' si no lo está lo establece como sólo lectura
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+    'Comprobamos si el archivo está como sólo lectura
+    If checkReadOnly(strFile) Then
+    
+        'si está como sólo lectura salimos
+        Exit Sub
+   
+    'en otro caso establecemos como sólo lectura
+    Else
+        
+        'Comprobamos que el archivo existe, comprobamos porque si el archivo no existe checkReadOnly retorna False
+        If checkFile(strFile) Then
+        
+            'Dimensionamos el objeto del sistema
+            Dim FSO As Object: Set FSO = dimFSO
+            Dim f As Object: Set f = FSO.getFile(strFile)
+            f.Attributes = f.Attributes + 1
+        Else
+            Exit Sub
+        End If
+    End If
+        
+End Sub
+'////////////////////////
+'ELIMINA EL ATRIBUTO DE SÓLO LECTURA DE UN ARCHIVO
+Sub removeReadOnly(strFile As String)
+'Comprueba si el archivo indicado está protegido contra escritura
+' si lo está elimina la condición de sólo lectura
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+    'Comprobamos si el archivo está como sólo lectura, si lo está eliminamos la condición
+    If checkReadOnly(strFile) Then
+    
+        'Dimensionamos el objeto del sistema
+        Dim FSO As Object: Set FSO = dimFSO
+        Dim f As Object: Set f = FSO.getFile(strFile)
+        f.Attributes = f.Attributes - 1
+
+    End If
+        
+End Sub
+
+'////////////////////////
+'OBTENER LOS NOMBRES DE TODOS LOS ARCHIVOS DE UN DIRECTORIO
+Function getFileNames(strFile As String) As Variant
+'retorna un array con todos los nombres de los archivos de un directorio
+' si está vacío o si el directorio no existe retorna un array vacío
+'strFile debe incorporar la ruta del archivo,
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\C_P_Limite_mes.xlsx"
+
+'Dimensionamos un array vacío
+Dim arr As Variant
+
+    'Comprobamos si el directorio existe en la ruta especificada
+    If checkFolder(strFile) Then
+        
+        'Dimensionamos el objeto del sistema
+        Dim FSO As Object: Set FSO = dimFSO
+        Dim MyFolder As Object: Set MyFolder = FSO.GetFolder(strFile)
+        Dim MyFile As Object
+        
+        'Dimensionamos variables
+        Dim i As Integer: i = 0
+        ReDim arr(MyFolder.Files.Count - 1)
+        
+        'iteramos sobre los elementos y los guardamos en el array
+        For Each MyFile In MyFolder.Files
+            arr(i) = MyFile.Name
+            i = i + 1
+            'Debug.Print MyFile.Name
+        Next MyFile
+        
+    End If
+    
+    'retornamos el array
+    getFileNames = arr
+    
+End Function
+
+'////////////////////////
+'OBTENER LOS NOMBRES DE TODOS LOS ARCHIVOS DE UN DIRECTORIO
+' Y SU FECHA DE MODIFICACIÓN
+
+Function getFileNamesAndDates(strFolder As String) As Variant
+'retorna un array bidimensional con todos los nombres de los archivos de un directorio
+' en la primera columna y las fechas de última modificación en la segunda
+' si está vacío o si el directorio no existe retorna un array vacío
+'strFolder ejemplo:
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\"
+
+'Dimensionamos un array vacío
+Dim arr As Variant
+
+    'Comprobamos si el directorio existe en la ruta especificada
+    If checkFolder(strFolder) Then
+        
+        'Dimensionamos el objeto del sistema
+        Dim FSO As Object: Set FSO = dimFSO
+        Dim MyFolder As Object: Set MyFolder = FSO.GetFolder(strFolder)
+        Dim MyFile As Object
+        
+        'Dimensionamos variables
+        Dim i As Integer: i = 0
+        ReDim arr(MyFolder.Files.Count - 1, 1)
+        
+        'iteramos sobre los elementos y los guardamos en el array
+        For Each MyFile In MyFolder.Files
+            arr(i, 0) = MyFile.Name
+            arr(i, 1) = DateValue(MyFile.datelastmodified)
+            i = i + 1
+            'Debug.Print MyFile.Name
+        Next MyFile
+        
+    End If
+    
+    'retornamos el array
+    getFileNamesAndDates = arr
+    
+End Function
+Function getFileNamesAndDatesCurrent(strFolder As String, dtDate As Date) As Variant
+'retorna un array bidimensional con todos los nombres de los archivos de un directorio
+' en la primera columna y las fechas de última modificación en la segunda
+'que estén en el mes y año de dtDate
+' si está vacío o si el directorio no existe retorna un array vacío
+'strFolder ejemplo:
+'ie: "H:\SC001047\SC003132\Salidas_Microstrategy\"
+
+'On Error GoTo GESTION_ERRORES
+
+'Dimensionamos un array vacío
+Dim arr As Variant
+
+    'Comprobamos si el directorio existe en la ruta especificada
+    If checkFolder(strFolder) Then
+        
+        'Dimensionamos el objeto del sistema
+        Dim FSO As Object: Set FSO = dimFSO
+        Dim MyFolder As Object: Set MyFolder = FSO.GetFolder(strFolder)
+        Dim MyFile As Object
+        
+        'Dimensionamos variables
+        Dim i As Integer: i = 0
+        ReDim arr(MyFolder.Files.Count - 1, 1)
+        
+        'iteramos sobre los elementos y los guardamos en el array
+        For Each MyFile In MyFolder.Files
+            
+            'añadimos sólo las entradas que cumplen con el mes especificado
+            If Month(DateValue(MyFile.datelastmodified)) = Month(dtDate) And Year(DateValue(MyFile.datelastmodified)) = Year(dtDate) Then
+                arr(i, 0) = MyFile.Name
+                arr(i, 1) = DateValue(MyFile.datelastmodified)
+                i = i + 1
+            End If
+            'Debug.Print MyFile.Name
+        Next MyFile
+    End If
+    
+    'retornamos el array
+    Dim arrSol As Variant
+    ReDim arrSol(i - 1, 1)
+    Dim j As Integer: j = 0
+    
+    For j = 0 To i - 1
+        arrSol(j, 0) = arr(j, 0)
+        arrSol(j, 1) = arr(j, 1)
+    Next j
+    getFileNamesAndDatesCurrent = arrSol
+
+'GESTION_ERRORES:
+'    Resume Next
+
+End Function
+Sub test()
+
+     Call getFileNames("H:\SC001762\saray\Clientes_Pymes_5.0\Filtrado masivo\Ficheros filtrado\")
+    
+End Sub
